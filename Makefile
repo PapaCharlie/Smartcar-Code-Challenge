@@ -1,5 +1,8 @@
 GM := http://gmapi.azurewebsites.net
 
+tar:
+	tar -cf smartcar_codechallenge.tar *.js package.json
+
 info:
 	curl -s $(GM)/getVehicleInfoService -X POST -H 'Content-Type: application/json' -d '{"id": "1234", "responseType": "JSON"}' | python -m json.tool
 

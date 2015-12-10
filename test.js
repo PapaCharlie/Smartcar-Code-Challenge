@@ -65,6 +65,8 @@ test('Right set of doors is returned', function(t) {
             // Both tests only pass if both frontRight and frontLeft are present
             t.ok(res.body[0].location == 'frontLeft' || res.body[1].location == 'frontLeft', 'Car has frontLeft door');
             t.ok(res.body[0].location == 'frontRight' || res.body[1].location == 'frontRight', 'Car has frontRight door');
+            t.equals(typeof res.body[0].locked, 'boolean', 'Door locked status is a boolean');
+            t.equals(typeof res.body[1].locked, 'boolean', 'Door locked status is a boolean');
         });
     request(app)
         .get('/vehicles/1235/doors')
@@ -75,6 +77,8 @@ test('Right set of doors is returned', function(t) {
 
             t.ok(res.body[0].location == 'frontLeft' || res.body[1].location == 'frontLeft', 'Car has frontLeft door');
             t.ok(res.body[0].location == 'frontRight' || res.body[1].location == 'frontRight', 'Car has frontRight door');
+            t.equals(typeof res.body[0].locked, 'boolean', 'Door locked status is a boolean');
+            t.equals(typeof res.body[1].locked, 'boolean', 'Door locked status is a boolean');
 
             t.end();
         });
@@ -89,6 +93,7 @@ test('Fuel level is returned properly for car 1234', function(t) {
             t.error(err, 'No error');
 
             t.ok(res.body.hasOwnProperty('percent'), 'API returns fuel percentage'); // percent is variable here, cannot test
+            t.equals(typeof res.body.percent, 'number', 'API returns fuel percentage'); // can only test for type and existence
         });
     request(app)
         .get('/vehicles/1234/battery')
@@ -111,6 +116,7 @@ test('Battery level is returned properly for car 1235', function(t) {
             t.error(err, 'No error');
 
             t.ok(res.body.hasOwnProperty('percent'), 'API returns battery percentage');
+            t.equals(typeof res.body.percent, 'number', 'API returns fuel percentage');
         });
     request(app)
         .get('/vehicles/1235/fuel')
@@ -127,7 +133,9 @@ test('Battery level is returned properly for car 1235', function(t) {
 test('Start|Stop engine returns correct attribute', function(t) {
     request(app)
         .post('/vehicles/1234/engine')
-        .send({action: 'START'})
+        .send({
+            action: 'START'
+        })
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
@@ -135,17 +143,21 @@ test('Start|Stop engine returns correct attribute', function(t) {
 
             // Start and Stop seem to have a small chance of failing on either car, so check only for correct attributes
             t.ok(res.body.hasOwnProperty('status'), 'API return error message');
+            t.equals(typeof res.body.status, 'string', 'Engine (start|stop) status is a string');
         });
 
     request(app)
         .post('/vehicles/1234/engine')
-        .send({action: 'STOP'})
+        .send({
+            action: 'STOP'
+        })
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
             t.error(err, 'No error');
 
             t.ok(res.body.hasOwnProperty('status'), 'API return error message');
+            t.equals(typeof res.body.status, 'string', 'Engine (start|stop) status is a string');
+            t.end();
         });
-        t.end();
 });
